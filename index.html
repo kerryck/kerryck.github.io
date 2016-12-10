@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>eResturaunt Proof of Concept</title>
+</head>
+<body>
+    <pre id="root"></pre>
+    <script type="text/javascript">
+          window.addEventListener('message', function(evt){
+            document.querySelector('#root').innerHTML += JSON.stringify(evt.data, '\t', '\t') + '\n';
+          });
+
+          window.parent.postMessage({
+        "type":"view",
+        "method":"set",
+        "payload": {
+            "height": 500,
+            "width": 500
+            }
+        }, "*");
+
+          window.parent.postMessage({
+                "type": "availability",
+                "method": "apiStatus",
+                "payload": {}
+            }, "*");
+    </script>
+</body>
+</html>
+
