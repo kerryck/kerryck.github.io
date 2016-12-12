@@ -4,29 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>eResturaunt Proof of Concept</title>
+    <title>eResturaunt Proof of Concept - External Widget</title>
+
+    <style type="text/css">
+        body {
+            background: #f2f2f6;
+        }
+    </style>
 </head>
 <body>
-    <pre id="root"></pre>
+    <p>This is an example of an external widget loaded from <span class="location"></span>.
+    <p>This widget is able to use the following APIs:<p>
+    <ul class="apis">
+    </ul>
     <script type="text/javascript">
-          window.addEventListener('message', function(evt){
-            document.querySelector('#root').innerHTML += JSON.stringify(evt.data, '\t', '\t') + '\n';
-          });
-
-          window.parent.postMessage({
-        "type":"view",
-        "method":"set",
-        "payload": {
-            "height": 500,
-            "width": 500
+        // Set Widget size.
+        window.parent.postMessage({
+            "type":"view",
+            "method":"set",
+            "payload": {
+                "height": 500,
+                "width": 500
             }
         }, "*");
 
-          window.parent.postMessage({
-                "type": "availability",
-                "method": "apiStatus",
-                "payload": {}
-            }, "*");
+        document.querySelector('.location').innerHTML = window.location.href;
+
+        window.addEventListener('message', function(evt){
+            var payload = evt.data;
+            if (payload && payload.type === 'availability'){
+                var ul = document.querySelector('.apis');
+
+                ul.innerHTML = Object.keys(payload.payload).map(function(key){
+                    return "<li>The " + key + " APIs: " + Object.keys(payload.payload[key]).join(', ') + "</li>"
+                }).join('');
+            }
+        });
     </script>
 </body>
 </html>
